@@ -16,6 +16,7 @@ const (
 	refreshAccessTokenURL = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s"
 	userInfoURL           = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN"
 	checkAccessTokenURL   = "https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s"
+	jscode2sessionURL     = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
 )
 
 //Oauth 保存用户授权信息
@@ -72,6 +73,31 @@ func (oauth *Oauth) GetUserAccessToken(code string) (result ResAccessToken, err 
 	}
 	if result.ErrCode != 0 {
 		err = fmt.Errorf("GetUserAccessToken error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
+		return
+	}
+	return
+}
+type ResSessionKey struct {
+	util.CommonError
+
+	OpenId     string `json:"openid"`
+	SessionKey string `json:"session_key"`
+	UnionId    string `json:"unionid"`
+}
+
+func (oauth *Oauth) GetSessionKey(jscode string) (result ResSessionKey, err error) {
+	urlStr := fmt.Sprintf(jscode2sessionURL, oauth.AppID, oauth.AppSecret, jscode)
+	var response []byte
+	response, err = util.HTTPGet(urlStr)
+	if (err != nil) {
+		return
+	}
+	err = json.Unmarshal(response, &result)
+	if err != nil {
+		return
+	}
+	if result.ErrCode != 0 {
+		err = fmt.Errorf("GetSessionKey error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
 		return
 	}
 	return
