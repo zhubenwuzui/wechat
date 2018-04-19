@@ -1,3 +1,5 @@
+# 对小程序的API做了一些封装
+
 # WeChat SDK for Go
 [![Build Status](https://travis-ci.org/silenceper/wechat.svg?branch=master)](https://travis-ci.org/silenceper/wechat)
 [![Go Report Card](https://goreportcard.com/badge/github.com/silenceper/wechat)](https://goreportcard.com/report/github.com/silenceper/wechat)
